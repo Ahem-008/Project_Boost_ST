@@ -1,24 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class movement : MonoBehaviour
 {
-    // Start is called before the first frame update
+ 
     [SerializeField] float forwardThrust = 1000;
     [SerializeField] float leftThrust = 1000;
     [SerializeField] float rightThrust = 1000;
 
     Rigidbody rd;
+    AudioSource main_thrusters;
+
     void Start()
     {
         rd = GetComponent<Rigidbody>();
+        main_thrusters = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         ProcessMovement();
+        Reset();
     }
 
     void ProcessMovement()
@@ -26,6 +27,15 @@ public class movement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             rd.AddRelativeForce(Vector3.up * forwardThrust * Time.deltaTime);
+
+            if (!main_thrusters.isPlaying)
+            {
+                main_thrusters.Play();
+            }
+        }
+        else
+        {
+            main_thrusters.Stop();
         }
 
         if (Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.D))
@@ -41,4 +51,13 @@ public class movement : MonoBehaviour
             rd.freezeRotation = false; ;
         }
     }
+
+    void Reset()
+    {
+        if (Input.GetKey(KeyCode.R))
+        {
+            transform.position = new Vector3(-42, 2, 0);
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+    }    
 }
